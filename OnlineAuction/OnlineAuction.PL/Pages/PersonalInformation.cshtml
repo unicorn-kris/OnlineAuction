@@ -1,0 +1,172 @@
+﻿@using OnlineAuction.Entities
+@using OnlineAuction.Dependencies
+
+@{
+    Layout = "~/Pages/Layout/BasicLayout.cshtml";
+
+    int userID = 0;
+
+    string userName = "";
+    string userSurname = "";
+    string userPhoneNumber = "";
+    DateTime userDateOfBirth = DateTime.MinValue;
+
+    User user = new User();
+
+    if (Request.QueryString["ID"] != null)
+    {
+
+        userID = int.Parse(Request.QueryString["ID"]);
+    }
+
+    if (userID != 0)
+    {
+        var userLogic = DependencyResolver.UserLogic;
+        var lotLogic = DependencyResolver.LotLogic;
+
+        user = userLogic.GetUserById(userID);
+
+        if (user != null)
+        {
+            userName = user.Name;
+            userSurname = user.SurName;
+            userPhoneNumber = user.PhoneNumber;
+            userDateOfBirth = user.DateOfBirth;
+
+            user.SellLots = (List<Lot>)lotLogic.GetSellLots(userID);
+
+            user.BoughtLots = (List<Lot>)lotLogic.GetBoughtLots(userID);
+
+        }
+    }
+
+    else
+    {
+        Response.Redirect("~/Pages/ErrorPage.cshtml?ID=" + userID);
+    }
+}
+
+@RenderPage("Partial/Partial.cshtml", userID)
+
+<div class="jumbotron text-lg-start">
+    <div class="container-fluid">
+        <h1>Здравствуй, @userName!</h1>
+        <p>Эту личную информацию о вас видят все пользователи Онлайн Аукциона!</p>
+
+        <div class="form-group row">
+            <p>Имя: <output class="col-sm-10 col-form-label">@userName</output></p>
+        </div>
+
+        <div class="form-group row">
+            <p>Фамилия: <output class="col-sm-10 col-form-label">@userSurname</output></p>
+        </div>
+
+        <div class="form-group row">
+            <p>Номер телефона: <output class="col-sm-10 col-form-label">@userPhoneNumber</output></p>
+        </div>
+
+        <div class="form-group row">
+            <p>Дата рождения: <output class="col-sm-10 col-form-label">@userDateOfBirth.ToShortDateString()</output></p>
+        </div>
+    </div>
+</div>
+
+<div>
+    <div class="btn-group" role="group" aria-label="Basic example">
+
+        <button class="btn btn-light col-sm-3" type="button" data-toggle="collapse"
+                data-target="#boughtLots" aria-expanded="false"
+                aria-controls="Table">
+            Купленные лоты
+        </button>
+
+        <button class="btn btn-light col-sm-3" type="button" data-toggle="collapse"
+                data-target="#sellLots" aria-expanded="false"
+                aria-controls="Table">
+            Продаваемые лоты
+        </button>
+    </div>
+
+    <div class="collapse" id="boughtLots">
+        <table class="table">
+            <thead class="thead-dark">
+                <tr>
+                    <td scope="col">Название</td>
+                    <td scope="col">Цена</td>
+                    <td scope="col">Автор</td>
+                    <td scope="col">Жанр</td>
+                    <td scope="col">Продавец</td>
+                    <td scope="col">Описание</td>
+                </tr>
+            </thead>
+            <tbody>
+
+                @if (user.BoughtLots != null)
+                {
+                    if (user.BoughtLots.Count != 0)
+                    {
+                        foreach (var lot in user.BoughtLots)
+                        {
+                            <tr>
+                                <td>@lot.Name</td>
+                                <td>@lot.Price</td>
+                                <td>@lot.Author</td>
+                                <td>@lot.Genre</td>
+                                <td>@lot.Seller.Name @lot.Seller.SurName @lot.Seller.PhoneNumber</td>
+                                <td>@lot.Description</td>
+                            </tr>
+                        }
+                    }
+                }
+
+            </tbody>
+        </table>
+
+    </div>
+
+    <div class="collapse" id="sellLots">
+        <table class="table">
+            <thead class="thead-dark">
+                <tr>
+                    <td scope="col">Название</td>
+                    <td scope="col">Цена</td>
+                    <td scope="col">Автор</td>
+                    <td scope="col">Жанр</td>
+                    <td scope="col">Покупатель</td>
+                    <td scope="col">Описание</td>
+                </tr>
+            </thead>
+            <tbody>
+                @if (user.SellLots != null)
+                {
+                    if (user.SellLots.Count != 0)
+                    {
+                        foreach (var lot in user.SellLots)
+                        {
+                            <tr>
+                                <td>@lot.Name</td>
+                                <td>@lot.Price</td>
+                                <td>@lot.Author</td>
+                                <td>@lot.Genre</td>
+                                <td>
+                                    @if (lot.Customer != null)
+                                    {
+                                        <p>@lot.Customer.Name @lot.Customer.SurName @lot.Customer.PhoneNumber</p>
+                                    }
+
+                                    else
+                                    {
+                                        <p>Нет покупателя</p>
+                                    }
+                                </td>
+                                <td>@lot.Description</td>
+                            </tr>
+                        }
+                    }
+                }
+
+            </tbody>
+        </table>
+    </div>
+
+</div>

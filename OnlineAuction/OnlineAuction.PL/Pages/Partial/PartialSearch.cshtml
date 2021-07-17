@@ -1,0 +1,80 @@
+﻿@using OnlineAuction.Entities
+@using OnlineAuction.Dependencies
+
+@{
+    Layout = null;
+
+    string genre = Page[0];
+
+    List<Lot> genreLots = new List<Lot>();
+    int userId = 0;
+
+    var lotLogic = DependencyResolver.LotLogic;
+
+    if (Page[1] != null)
+    {
+
+        userId = Page[1];
+
+
+        genreLots = lotLogic.GetNoUserLotForSellByIDAndGenre(userId, genre).ToList();
+
+    }
+    else
+    {
+        Response.Redirect("~/Pages/ErrorPage.cshtml?ID=" + userId);
+    }
+
+    if (IsPost)
+    {
+        if (Request.Form["BuyLot"] != null)
+        {
+            if (Request["SelectedLot"] != null && Request["SelectedLot"] != "null")
+            {
+                int lotID = int.Parse(Request["SelectedLot"]);
+                lotLogic.BuyLot(userId, lotID);
+                <div class="alert alert-info" role="alert">
+                    Покупка лота прошла успешно!
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-info" role="alert">
+                    Покупка не удалась, повторите попытку!
+                </div>
+            }
+
+        }
+        if (Request.Form["NoBuyLot"] != null)
+        {
+            <div class="alert alert-info" role="alert">
+                Покупка не удалась, повторите попытку!
+            </div>
+        }
+    }
+}
+
+
+<form method="post">
+    <div id="genreLots">
+        <select class="custom-select" name="SelectedLot">
+            <option selected value="null">Выберите интересующую книгу</option>
+            @foreach (var lot in genreLots)
+            {
+                <option value="@lot.Id">
+                    Название: @lot.Name Цена: @lot.Price Автор: @lot.Author Жанр: @lot.Genre
+                    Продавец: @lot.Seller.Name @lot.Seller.SurName @lot.Seller.PhoneNumber
+                    @lot.Seller.DateOfBirth.ToShortDateString() Описание: @lot.Description
+                </option>
+            }
+        </select>
+
+        <button class="btn btn-light col-sm-3" nane="BuyLot">
+            Купить
+        </button>
+        <button class="btn btn-light col-sm-3" nane="NoBuyLot">
+            Свернуть
+        </button>
+        <p>Чтобы выбрать другой жанр</p>
+    </div>
+</form>

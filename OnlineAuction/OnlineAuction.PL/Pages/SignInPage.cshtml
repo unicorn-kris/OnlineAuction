@@ -1,0 +1,61 @@
+﻿@{
+    Layout = "~/Pages/Layout/BasicLayout.cshtml";
+
+    int userID = 0;
+
+    if (Request.QueryString["ID"] != null)
+    {
+        userID = int.Parse(Request.QueryString["ID"]);
+    }
+
+    if (IsPost)
+    {
+        if (Request.Form["PersonalInformationBTN"] != null)
+        {
+            Response.Redirect("~/Pages/PersonalInformation.cshtml?ID=" + userID);
+        }
+
+        if (Request.Form["SellALotBTN"] != null)
+        {
+            Response.Redirect("~/Pages/SellALot.cshtml?ID=" + userID);
+        }
+        else if (Request.Form["SearchBTN"] != null)
+        {
+            Response.Redirect("~/Pages/Search.cshtml?ID=" + userID);
+        }
+
+    }
+
+}
+
+@RenderPage("Partial/Partial.cshtml", userID);
+
+    <form method="post">
+        <div class="container">
+            <h2>Выберите, что вы собираетесь сделать!</h2>
+            <ul class="list-group">
+                <li>
+                    <input name="PersonalInformationBTN" type="submit" value="Личная информация" class="btn btn-light" />
+                    <p>
+                        Здесь вы можете просмотреть свою личную информацию, а также информацию о продаваемых
+                        или купленных вами лотах данного аукциона.
+                    </p>
+                </li>
+                <li>
+                    <input name="SellALotBTN" type="submit" value="Продать лот" class="btn btn-light" />
+                    <p>
+                        Здесь вы можете выложить свой лот на аукцион.
+                    </p>
+
+                </li>
+                <li>
+                    <input name="SearchBTN" type="submit" value="Поиск" class="btn btn-light" />
+                    <p>
+                        Здесь вы можете найти интересующий вас лот по его названию или по имени продавца, а также вывести их в отсортированном
+                        виде по возрастанию или убыванию стоимости. <br /> ВНИМАНИЕ! На этой странице представленны только еще не купленные лоты!
+                    </p>
+
+                </li>
+            </ul>
+        </div>
+    </form>

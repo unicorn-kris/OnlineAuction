@@ -1,0 +1,180 @@
+﻿@using OnlineAuction.Dependencies
+@using OnlineAuction.Entities
+
+@{
+
+    Lot lot = new Lot();
+
+    List<string> bookGenre = lot.BookGenre;
+
+    Layout = "~/Pages/Layout/BasicLayout.cshtml";
+
+    var dateNow = DateTime.Now.ToString("yyyy-MM-dd");
+    var dateMinimum = DateTime.Now.AddYears(-150).ToString("yyyy-MM-dd");
+
+    var name = "";
+    var price = "";
+    var description = "";
+    var author = "";
+    var genre = "";
+    var password = "";
+
+    int userID = 0;
+    User newUser = new User();
+
+    var userLogic = DependencyResolver.UserLogic;
+
+    if (Request.QueryString["ID"] != null)
+    {
+
+        userID = int.Parse(Request.QueryString["ID"]);
+
+        if (userID != 0)
+        {
+            newUser = userLogic.GetUserById(userID);
+        }
+    }
+
+    if (newUser != null && userID != 0)
+    {
+        if (IsPost)
+        {
+
+            name = Request["LotName"];
+            price = Request["LotPrice"];
+            author = Request["LotAuthor"];
+            genre = Request["LotGenre"];
+            description = Request["LotDescription"];
+
+            password = Request["Password"];
+
+
+            if (name != null && price != null && description != null && password != null && author != null && genre != null)
+            {
+
+                if (password != newUser.Password)
+                {
+                    <div class="alert alert-danger" role="alert">
+                        неверный пароль!
+                    </div>
+                }
+
+                else
+                {
+
+                    lot.Name = name;
+                    lot.Price = int.Parse(price);
+                    lot.Description = description;
+                    lot.Seller = newUser;
+                    lot.Author = author;
+                    lot.Genre = genre;
+
+                    var lotLogic = DependencyResolver.LotLogic;
+
+                    lotLogic.Add(lot);
+
+                }
+            }
+            else
+            {
+                <div class="alert alert-danger" role="alert">
+                    Некоторые поля оказались пустыми, повторите ввод!
+                </div>
+            }
+        }
+
+    }
+    else
+    {
+        Response.Redirect("~/Pages/ErrorPage.cshtml?ID=" + userID);
+    }
+
+}
+
+@RenderPage("Partial/Partial.cshtml", userID);
+
+<form method="post">
+    <div class="jumbotron text-center">
+        <div class="container">
+            <h1>Выложите свой лот на аукцион!</h1>
+            <div class="row">
+                <div class="col-sm-6">
+
+                    <h3>Добавить информацию о новом лоте</h3>
+
+                    <div class="form-group row">
+                        <label for="LotName" class="col-sm-2 col-form-label">Название</label>
+                        <div class="col-sm-10">
+                            <input name="LotName" type="text" class="form-control">
+                        </div>
+                    </div>
+
+                    <br />
+
+                    <div class="form-group row">
+                        <label for="LotPrice" class="col-sm-2 col-form-label">Стоимость</label>
+                        <div class="col-sm-5">
+
+                            <input name="LotPrice" type="number" class="form-control" min="1" max=@int.MaxValue>
+
+                        </div>
+                        <label class="col-sm-2 col-form-label">Рублей</label>
+                    </div>
+
+                    <br />
+
+                    <div class="form-group row">
+                        <label for="LotAuthor" class="col-sm-2 col-form-label">Автор</label>
+                        <div class="col-sm-10">
+                            <input name="LotAuthor" type="text" class="form-control">
+                        </div>
+
+                    </div>
+
+                    <br />
+
+                    <div class="form-group row">
+                        <label for="LotGenre" class="col-sm-2 col-form-label">Жанр</label>
+                        <div class="col-sm-10">
+                            <select class="custom-select" name="LotGenre">
+                                <option selected value="null">Nothing</option>
+                                @foreach (string bookgenre in bookGenre)
+                                {
+                                    <option value="@bookgenre">@bookgenre</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+
+                    <br />
+
+                    <div class="form-group row">
+                        <label for="LotDescription" class="col-sm-2 col-form-label">Описание</label>
+                        <div class="col-sm-10">
+                            <input name="LotDescription" type="text" class="form-control">
+                            <label class="col-sm-10 col-form-label">(не более 100 символов)</label>
+                        </div>
+
+                    </div>
+
+                    <label class="col-sm-12 col-form-label">
+                        Для подтверждения действия требуется ввести пароль
+                        от вашей учетной записи
+                    </label>
+
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label">Пароль</label>
+                        <div class="col-sm-10">
+                            <input name="Password" type="text" class="form-control">
+                        </div>
+                    </div>
+
+                    <br />
+
+                    <input type="submit" class="btn btn-light" value="Выложить лот" />
+
+                </div>
+            </div>
+        </div>
+    </div>
+</form>

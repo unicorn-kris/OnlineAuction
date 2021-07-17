@@ -1,0 +1,36 @@
+﻿@{
+    Layout = null;
+
+    int userId = Page[0];
+    if (IsPost)
+    {
+        if (Request.Form["PersonalInformationBTN"] != null)
+        {
+            Response.Redirect("~/Pages/PersonalInformation.cshtml?ID=" + userId);
+        }
+
+        if (Request.Form["SellALotBTN"] != null)
+        {
+            Response.Redirect("~/Pages/SellALot.cshtml?ID=" + userId);
+        }
+        else if (Request.Form["SearchBTN"] != null)
+        {
+            Response.Redirect("~/Pages/Search.cshtml?ID=" + userId);
+        }
+
+    }
+}
+
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <form class="form-inline" method="post">
+
+        <input name="PersonalInformationBTN" type="submit" value="Личная информация" class="btn btn-light" />
+
+        <input name="SellALotBTN" type="submit" value="Продать лот" class="btn btn-light" />
+
+        <input name="SearchBTN" type="submit" value="Поиск" class="btn btn-light" />
+
+    </form>
+</nav>
+<script src="~/Scripts/jquery-3.6.0.min.js"></script>

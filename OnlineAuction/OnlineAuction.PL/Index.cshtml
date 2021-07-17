@@ -1,0 +1,103 @@
+﻿@using OnlineAuction.Entities
+@using OnlineAuction.Dependencies
+
+@{
+                Layout = "~/Pages/Layout/BasicLayout.cshtml";
+
+    if (IsPost)
+                {
+                    if (Request["SignInLogin"] != "" && Request["SignInPassword"] != "")
+                    {
+
+                        string login = Request["SignInLogin"];
+
+                        string password = Request["SignInPassword"];
+
+                        var userLogic = DependencyResolver.UserLogic;
+
+                        List<User> usersInDB = (List<User>)userLogic.GetAll();
+
+                        User user = new User();
+
+                        foreach (User lookUser in usersInDB)
+                        {
+                            if (lookUser.Email == login && lookUser.Password == password)
+                            {
+                                user = lookUser;
+                                break;
+                            }
+                        }
+
+                        if (user.Id == 0)
+                        {
+                <div class="alert alert-danger" role="alert">
+                    Неверный адрес электронной почты или пароль!
+                </div>
+            }
+
+            else
+            {
+
+                int userID = user.Id;
+
+        Response.Redirect("~/Pages/SignInPage.cshtml?ID=" + userID);
+        }
+    }
+
+    else
+    {
+            <div class="alert alert-danger" role="alert">
+               Некоторые поля для входа оказались пустыми!
+            </div>
+        }
+    }
+
+}
+
+<div class="jumbotron text-center">
+    <div class="container">
+        <h1>Добро пожаловать на книжный Онлайн Аукцион!</h1>
+        <p>Пожалуйста, зарегистрируйтесь или войдите</p>
+        <div class="row">
+            <div class="col-sm-6">
+
+                <input id="LogButton" type="button" value="Зарегистрироваться" />
+
+            </div>
+
+            <div class="col-sm-6">
+
+                <h3>Войти</h3>
+
+                <form method="post">
+
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label">Email</label>
+                        <div class="col-sm-10">
+                            <input name="SignInLogin" type="text" class="form-control">
+                        </div>
+                    </div>
+
+                    <br />
+
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label">Пароль</label>
+                        <div class="col-sm-10">
+                            <input name="SignInPassword" type="text" class="form-control">
+                        </div>
+                    </div>
+
+                    <br />
+
+                    <input id="InButton" type="submit" value="Вход" />
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $('#LogButton').click(function () {
+        location.href = '/Account/Register.cshtml';
+    })
+</script>
