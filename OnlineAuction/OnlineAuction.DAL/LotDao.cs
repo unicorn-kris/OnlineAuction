@@ -404,6 +404,65 @@ namespace OnlineAuction.DAL
             }
             return lots;
         }
+
+        public IEnumerable<Lot> GetAllLotsByGenre(string genre)
+        {
+            List<Lot> lots = new List<Lot>();
+
+            int ID = 0;
+            string Name = "";
+            string Author = "";
+            string Genre = "";
+            int Price = 0;
+            int Seller = 0;
+            int Customer = 0;
+            string Description = "";
+
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                var cmd = connection.CreateCommand();
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.CommandText = "GetAllLotsByGenre";
+                cmd.Parameters.AddWithValue(@"Genre", genre);
+                connection.Open();
+
+                var reader = cmd.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    UserDao userDao = new UserDao();
+                    Lot newLot = new Lot();
+
+                    ID = (int)reader["ID"];
+                    Name = (string)reader["Name"];
+                    Author = (string)reader["Author"];
+                    Genre = (string)reader["Genre"];
+                    Price = (int)reader["Price"];
+                    Seller = (int)reader["Seller"];
+
+                    if (reader["Customer"].ToString() != "")
+                        Customer = (int)reader["Customer"];
+                    else
+                        Customer = 0;
+                    Description = (string)reader["Description"];
+
+                    newLot.Id = ID;
+                    newLot.Name = Name;
+                    newLot.Price = Price;
+                    newLot.Author = Author;
+                    newLot.Genre = Genre;
+                    newLot.Seller = userDao.GetUserById(Seller);
+                    if (Customer != 0)
+                        newLot.Customer = userDao.GetUserById(Customer);
+                    newLot.Description = Description;
+
+                    lots.Add(newLot);
+                }
+
+            }
+            return lots;
+        }
+
     }
 
 }

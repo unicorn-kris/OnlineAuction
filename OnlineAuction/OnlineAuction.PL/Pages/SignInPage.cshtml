@@ -3,9 +3,9 @@
 
     int userID = 0;
 
-    if (Request.QueryString["ID"] != null)
+    if (User.Identity.IsAuthenticated)
     {
-        userID = int.Parse(Request.QueryString["ID"]);
+         userID = int.Parse(User.Identity.Name);
     }
 
     if (IsPost)

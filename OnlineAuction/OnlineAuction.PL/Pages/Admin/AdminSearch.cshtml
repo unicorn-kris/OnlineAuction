@@ -1,0 +1,130 @@
+﻿@using OnlineAuction.Dependencies
+@using OnlineAuction.Entities
+
+@{
+
+    var lotLogic = DependencyResolver.LotLogic;
+    Lot newLot = new Lot();
+
+    List<string> bookGenre = newLot.BookGenre;
+
+    string genre = "";
+
+    Layout = "~/Pages/Layout/BasicLayout.cshtml";
+
+    var userID = 0;
+
+    if (User.Identity.IsAuthenticated)
+    {
+        userID = int.Parse(User.Identity.Name);
+    }
+
+    var userLogic = DependencyResolver.UserLogic;
+
+    List<Lot> allLots = new List<Lot>();
+
+    if (userID == 0)
+    {
+
+        allLots = lotLogic.GetAll().ToList();
+    }
+    else
+    {
+        Response.Redirect("~/Pages/ErrorPage.cshtml?ID=");
+    }
+
+
+}
+
+
+@RenderPage("~/Pages/Partial/PartialAdmin.cshtml");
+
+<div class="collapse" id="allLots">
+    <table class="table">
+        <thead class="thead-dark">
+            <tr>
+                <td scope="col">Название</td>
+                <td scope="col">Цена</td>
+                <td scope="col">Автор</td>
+                <td scope="col">Жанр</td>
+                <td scope="col">Продавец</td>
+                <td scope="col">Описание</td>
+                <td scope="col">Покупатель</td>
+            </tr>
+        </thead>
+        <tbody>
+
+            @foreach (var lot in allLots)
+            {
+                <tr>
+                    <td>@lot.Name</td>
+                    <td>@lot.Price</td>
+                    <td>@lot.Author</td>
+                    <td>@lot.Genre</td>
+                    <td>
+                        @lot.Seller.Name @lot.Seller.SurName @lot.Seller.PhoneNumber
+                        @lot.Seller.DateOfBirth.ToShortDateString()
+                    </td>
+                    <td>@lot.Description</td>
+                    <td>
+                        @if (lot.Customer.Id != 0 && lot.Customer != null)
+                        {
+                            <p>
+                                @lot.Customer.Name @lot.Customer.SurName @lot.Customer.PhoneNumber
+                                @lot.Customer.DateOfBirth.ToShortDateString()
+                            </p>
+                        }
+                        else
+                        {
+                            <p>  Нет покупателя </p>
+                        }
+                    </td>
+
+                </tr>
+            }
+
+        </tbody>
+    </table>
+
+</div>
+@if (IsPost)
+    {
+        if (Request.Form["LotsBTN"] != null)
+        {
+            genre = Request.Form["LotGenre"];
+            if (genre != "null" && genre != null)
+
+            {
+                <div>@RenderPage("~/Pages/Partial/PartialSearch.cshtml", genre, userID)</div>
+
+            }
+            else
+            {
+                <div class="alert alert-danger" role="alert">
+                    Выберите жанр!
+                </div>
+            }
+        }
+
+    }
+    <form method="post">
+        <br />
+        <button class="btn btn-light col-sm-3" type="button" data-toggle="collapse"
+                data-target="#allLots" aria-expanded="false"
+                aria-controls="Table">
+            Все книги
+        </button>
+
+        <select class="custom-select" name="LotGenre">
+            <option selected value="null">Nothing</option>
+            @foreach (string bookgenre in bookGenre)
+            {
+                <option value="@bookgenre">@bookgenre</option>
+            }
+        </select>
+
+        <button class="btn btn-light col-sm-3" type="submit" name="LotsBTN">
+            Поиск по жанру
+        </button>
+
+    </form>

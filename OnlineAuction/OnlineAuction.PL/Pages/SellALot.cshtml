@@ -19,21 +19,23 @@
     var genre = "";
     var password = "";
 
-    int userID = 0;
+
     User newUser = new User();
 
     var userLogic = DependencyResolver.UserLogic;
 
-    if (Request.QueryString["ID"] != null)
+    int userID = 0;
+
+    if (User.Identity.IsAuthenticated)
     {
-
-        userID = int.Parse(Request.QueryString["ID"]);
-
-        if (userID != 0)
-        {
-            newUser = userLogic.GetUserById(userID);
-        }
+        userID = int.Parse(User.Identity.Name);
     }
+
+    if (userID != 0)
+    {
+        newUser = userLogic.GetUserById(userID);
+    }
+    
 
     if (newUser != null && userID != 0)
     {

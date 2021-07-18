@@ -1,0 +1,72 @@
+﻿@using OnlineAuction.Dependencies
+@using OnlineAuction.Entities
+
+@{
+
+    Layout = "~/Pages/Layout/BasicLayout.cshtml";
+
+    var userID = 0;
+
+    if (User.Identity.IsAuthenticated)
+    {
+        userID = int.Parse(User.Identity.Name);
+    }
+
+    var userLogic = DependencyResolver.UserLogic;
+
+    List<User> allUsers = new List<User>();
+
+    allUsers = userLogic.GetAll().ToList();
+
+    if (userID != 0)
+    {
+        Response.Redirect("~/Pages/ErrorPage.cshtml?ID=");
+    }
+
+    if (IsPost)
+    {
+        if (Request.Form["DeleteUser"] != null)
+        {
+            if (Request["SelectedUser"] != null && Request["SelectedUser"] != "null")
+            {
+                int userId = int.Parse(Request["SelectedUser"]);
+                userLogic.DeleteUser(userId);
+
+
+                <div class="alert alert-info" role="alert">
+                    Удаление прошло успешно, если у пользователя не было покупок!
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-info" role="alert">
+                    Удаление не удалось, повторите попытку!
+                </div>
+            }
+
+        }
+    }
+}
+
+
+@RenderPage("~/Pages/Partial/PartialAdmin.cshtml");
+
+<form method="post">
+    <select class="custom-select" name="SelectedUser">
+        <option selected value="null">Выберите интересующего пользователя</option>
+        @foreach (var user in allUsers)
+        {
+            {
+                <option value="@user.Id">
+                    Имя: @user.Name Фамилия: @user.SurName Номер телефона: @user.PhoneNumber
+                    Электронная почта: @user.Email Дата рождения: @user.DateOfBirth.ToShortDateString()
+                </option>
+            }
+        }
+    </select>
+
+    <button class="btn btn-light col-sm-3" name="DeleteUser">
+        Удалить
+    </button>
+
+</form>

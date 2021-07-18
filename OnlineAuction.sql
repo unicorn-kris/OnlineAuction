@@ -137,3 +137,10 @@ AS
 SELECT ID, Name, Price, Author, Genre, Description, Seller, Customer from Lots
 WHERE Seller<>@UserID AND Genre = @Genre 
 GO
+
+CREATE PROCEDURE GetAllLotsByGenre
+@Genre varchar (100)
+AS
+SELECT ID, Name, Price, Author, Genre, Description, Seller, Customer from Lots
+WHERE Genre = @Genre 
+GO

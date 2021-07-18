@@ -12,26 +12,26 @@
 
     Layout = "~/Pages/Layout/BasicLayout.cshtml";
 
-    int userID = 0;
-
     User newUser = new User();
 
     var userLogic = DependencyResolver.UserLogic;
 
     List<Lot> allLots = new List<Lot>();
 
-    if (Request.QueryString["ID"] != null)
+    int userID = 0;
+
+    if (User.Identity.IsAuthenticated)
     {
-
-        userID = int.Parse(Request.QueryString["ID"]);
-
-        if (userID != 0)
-        {
-            newUser = userLogic.GetUserById(userID);
-
-           allLots = lotLogic.GetNoUserLotForSellByID(userID).ToList();
-        }
+        userID = int.Parse(User.Identity.Name);
     }
+
+    if (userID != 0)
+    {
+        newUser = userLogic.GetUserById(userID);
+
+        allLots = lotLogic.GetNoUserLotForSellByID(userID).ToList();
+    }
+    
 
 
     if (newUser == null || userID == 0)

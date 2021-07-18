@@ -1,0 +1,37 @@
+﻿@{
+    Layout = "~/Pages/Layout/BasicLayout.cshtml"; 
+
+    string userId = Page[0];
+
+    if (IsPost)
+    {
+        if (Request.Form["Search"] != null)
+        {
+            Response.Redirect("~/Pages/Admin/AdminSearch.cshtml?ID=" + "admin");
+        }
+
+        if (Request.Form["DeleteLot"] != null)
+        {
+            Response.Redirect("~/Pages/Admin/AdminDeleteLot.cshtml?ID=" + "admin");
+        }
+        else if (Request.Form["DeleteUser"] != null)
+        {
+            Response.Redirect("~/Pages/Admin/AdminDeleteUser.cshtml?ID=" + "admin");
+        }
+
+    }
+}
+
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <form class="form-inline" method="post">
+
+        <input name="Search" type="submit" value="Просмотр всех лотов" class="btn btn-light" />
+
+        <input name="DeleteLot" type="submit" value="Удалить лот" class="btn btn-light" />
+
+        <input name="DeleteUser" type="submit" value="Удалить пользователя" class="btn btn-light" />
+
+    </form>
+</nav>
+<script src="~/Scripts/jquery-3.6.0.min.js"></script>

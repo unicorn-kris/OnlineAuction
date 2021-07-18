@@ -55,5 +55,10 @@ namespace OnlineAuction.BLL
         {
             _lotDao.DeleteLot(lotId);
         }
+
+        public IEnumerable<Lot> GetAllLotsByGenre(string genre)
+        {
+           return _lotDao.GetAllLotsByGenre(genre);
+        }
     }
 }

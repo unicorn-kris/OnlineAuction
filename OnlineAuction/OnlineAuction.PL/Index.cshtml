@@ -1,58 +1,64 @@
 ﻿@using OnlineAuction.Entities
 @using OnlineAuction.Dependencies
+@using OnlineAuction.PL.Models
 
 @{
-                Layout = "~/Pages/Layout/BasicLayout.cshtml";
+    Layout = "~/Pages/Layout/BasicLayout.cshtml";
 
     if (IsPost)
+    {
+        if (Request["SignInLogin"] != "" && Request["SignInPassword"] != "")
+        {
+            string login = Request["SignInLogin"];
+
+            string password = Request["SignInPassword"];
+
+            if (Auth.IsAuth(login, password))
+            {
+
+                var userLogic = DependencyResolver.UserLogic;
+
+                List<User> usersInDB = (List<User>)userLogic.GetAll();
+
+                User user = new User();
+                int userID = 0;
+
+                foreach (User lookUser in usersInDB)
                 {
-                    if (Request["SignInLogin"] != "" && Request["SignInPassword"] != "")
+                    if (lookUser.Email == login && lookUser.Password == password)
                     {
+                        user = lookUser;
+                        break;
+                    }
+                }
 
-                        string login = Request["SignInLogin"];
+                userID = user.Id;
 
-                        string password = Request["SignInPassword"];
+                FormsAuthentication.SetAuthCookie(userID.ToString(), createPersistentCookie: true);
 
-                        var userLogic = DependencyResolver.UserLogic;
+                Response.Redirect("~/Pages/LogIn.cshtml?ID=" + userID);
+            }
 
-                        List<User> usersInDB = (List<User>)userLogic.GetAll();
 
-                        User user = new User();
-
-                        foreach (User lookUser in usersInDB)
-                        {
-                            if (lookUser.Email == login && lookUser.Password == password)
-                            {
-                                user = lookUser;
-                                break;
-                            }
-                        }
-
-                        if (user.Id == 0)
-                        {
+            else
+            {
                 <div class="alert alert-danger" role="alert">
                     Неверный адрес электронной почты или пароль!
                 </div>
             }
-
-            else
-            {
-
-                int userID = user.Id;
-
-        Response.Redirect("~/Pages/SignInPage.cshtml?ID=" + userID);
         }
-    }
 
-    else
-    {
+
+        else
+        {
             <div class="alert alert-danger" role="alert">
-               Некоторые поля для входа оказались пустыми!
+                Некоторые поля для входа оказались пустыми!
             </div>
         }
     }
 
 }
+
 
 <div class="jumbotron text-center">
     <div class="container">

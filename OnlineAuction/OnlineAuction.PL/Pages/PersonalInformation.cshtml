@@ -13,10 +13,9 @@
 
     User user = new User();
 
-    if (Request.QueryString["ID"] != null)
+    if (User.Identity.IsAuthenticated)
     {
-
-        userID = int.Parse(Request.QueryString["ID"]);
+        userID = int.Parse(User.Identity.Name);
     }
 
     if (userID != 0)
@@ -149,7 +148,7 @@
                                 <td>@lot.Author</td>
                                 <td>@lot.Genre</td>
                                 <td>
-                                    @if (lot.Customer != null)
+                                    @if (lot.Customer.Id != 0 && lot.Customer != null)
                                     {
                                         <p>@lot.Customer.Name @lot.Customer.SurName @lot.Customer.PhoneNumber</p>
                                     }

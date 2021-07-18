@@ -1,0 +1,23 @@
+﻿@using System.Collections.Generic;
+@using OnlineAuction.Dependencies;
+@using OnlineAuction.Entities;
+
+@{
+    Layout = "~/Pages/Layout/BasicLayout.cshtml";
+
+    int userID = 0;
+
+    if (User.Identity.IsAuthenticated)
+    {
+        userID = int.Parse(User.Identity.Name);
+    }
+
+    if (User.IsInRole("admin"))
+    {
+        Response.Redirect("~/Pages/Partial/PartialAdmin.cshtml?ID=" + "admin");
+    }
+    else
+    {
+        Response.Redirect("~/Pages/SignInPage.cshtml?ID=" + userID);
+    }
+}
