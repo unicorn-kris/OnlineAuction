@@ -63,16 +63,16 @@
                     <td>@lot.Genre</td>
                     <td>
                         @lot.Seller.Name @lot.Seller.SurName @lot.Seller.PhoneNumber
-                        @lot.Seller.DateOfBirth.ToShortDateString()
+                        @lot.Seller.DateOfBirth.ToShortDateString() @lot.Seller.Email
                     </td>
                     <td>@lot.Description</td>
                     <td>
                         @if (lot.Customer.Id != 0 && lot.Customer != null)
                         {
-                            <p>
-                                @lot.Customer.Name @lot.Customer.SurName @lot.Customer.PhoneNumber
-                                @lot.Customer.DateOfBirth.ToShortDateString()
-                            </p>
+                        <p>
+                            @lot.Customer.Name @lot.Customer.SurName @lot.Customer.PhoneNumber
+                            @lot.Customer.DateOfBirth.ToShortDateString() @lot.Customer.Email
+                        </p>
                         }
                         else
                         {

@@ -60,7 +60,7 @@
         }
         if (Request.Form["LogButton"] != null)
         {
-            Response.Redirect("/Account/Register.cshtml?ID=");
+            Response.Redirect("~/Pages/Account/Register.cshtml?ID=");
         }
     }
 
@@ -112,8 +112,3 @@
     </div>
 </form>
 
-<script>
-    $('#LogButton').click(function () {
-        location.href = '~/Account/Register.cshtml';
-    })
-</script>

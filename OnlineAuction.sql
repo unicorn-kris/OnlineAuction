@@ -101,6 +101,7 @@ CREATE PROCEDURE DeleteUser
 AS
 delete from Users where ID = @UserID
 delete from Lots where Seller = @UserID
+delete from Lots where Customer = @UserID
 go
 
 CREATE PROCEDURE DeleteLot
