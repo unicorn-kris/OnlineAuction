@@ -1,5 +1,5 @@
 ﻿@{
-    Layout = "~/Pages/Layout/BasicLayout.cshtml"; 
+    Layout = "~/Pages/Layout/BasicLayout.cshtml";
 
     string userId = Page[0];
 
@@ -18,7 +18,10 @@
         {
             Response.Redirect("~/Pages/Admin/AdminDeleteUser.cshtml?ID=" + "admin");
         }
-
+        else if (Request.Form["LogOut"] != null)
+        {
+            Response.Redirect("~/Pages/LogOut.cshtml?ID=");
+        }
     }
 }
 
@@ -31,6 +34,8 @@
         <input name="DeleteLot" type="submit" value="Удалить лот" class="btn btn-light" />
 
         <input name="DeleteUser" type="submit" value="Удалить пользователя" class="btn btn-light" />
+
+        <input name="LogOut" type="submit" value="Выход" class="btn btn-light" />
 
     </form>
 </nav>

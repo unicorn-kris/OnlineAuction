@@ -60,7 +60,7 @@
         <option selected value="null">Выберите интересующую книгу</option>
         @foreach (var lot in allLots)
         {
-            if (lot.Customer == null)
+            if (lot.Customer == null || lot.Customer.Id == 0)
             {
                 <option value="@lot.Id">
                     Название: @lot.Name Цена: @lot.Price Автор: @lot.Author Жанр: @lot.Genre

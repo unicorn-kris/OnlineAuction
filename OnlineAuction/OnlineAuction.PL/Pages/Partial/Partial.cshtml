@@ -17,6 +17,10 @@
         {
             Response.Redirect("~/Pages/Search.cshtml?ID=" + userId);
         }
+        else if (Request.Form["LogOut"] != null)
+        {
+            Response.Redirect("~/Pages/LogOut.cshtml?ID=");
+        }
 
     }
 }
@@ -30,6 +34,8 @@
         <input name="SellALotBTN" type="submit" value="Продать лот" class="btn btn-light" />
 
         <input name="SearchBTN" type="submit" value="Поиск" class="btn btn-light" />
+
+        <input name="LogOut" type="submit" value="Выход" class="btn btn-light" />
 
     </form>
 </nav>
